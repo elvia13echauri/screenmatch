@@ -49,6 +49,8 @@ public class Principal {
         temporadas.forEach(t -> t.episodios()
                 .forEach(e -> System.out.println(e.titulo())));
 
+        //Convertir todas la informacion en una lista de tipo DatosEpisodio
+        List<DatosEpisodio>
 
     }
 }
