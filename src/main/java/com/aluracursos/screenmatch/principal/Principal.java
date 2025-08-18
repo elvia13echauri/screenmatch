@@ -29,9 +29,12 @@ public class Principal {
         var opcion = -1;
         while (opcion != 0) {
             var menu = """
-                    1 - Buscar series 
+                    1 - Agregar Serie
                     2 - Buscar episodios
                     3 - Mostrar series buscadas
+                    4 - Buscar Series por Titulo
+                    5 - Top 5 mejores Series
+                    6 - Buscar Series por Categoria
                                   
                     0 - Salir
                     """;
@@ -50,7 +53,15 @@ public class Principal {
                 case 3:
                     mostrarSeriesBuscadas();
                     break;
-
+                case 4:
+                    buscarSeriesPorTitulo();
+                    break;
+                case 5:
+                    buscarTop5Series();
+                    break;
+                case 6:
+                    buscaSeriePorCategoria();
+                    break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
                     break;
@@ -113,6 +124,33 @@ public class Principal {
         series.stream()
                 .sorted(Comparator.comparing(Serie::getGenero))
                 .forEach(System.out::println);
+    }
+
+    private void buscarSeriesPorTitulo() {
+        System.out.println("Escribe el nombre de la serie que quieres buscar: ");
+        var nombreSerie = teclado.nextLine();
+        Optional<Serie> serieBuscada = repositorio.findByTituloContainsIgnoreCase(nombreSerie);
+
+        if (serieBuscada.isPresent()){
+            System.out.println("La serie buscada es: " + serieBuscada.get());
+        }else {
+            System.out.println("Serie no encontrada");
+        }
+    }
+
+    private void buscarTop5Series() {
+        List<Serie> topSeries = repositorio.findTop5ByOrderByEvaluacionDesc();
+        topSeries.forEach(s ->
+                System.out.println("Serie: " + s.getTitulo() + " | Evaluacion: " + s.getEvaluacion()));
+    }
+
+    private void buscaSeriePorCategoria() {
+        System.out.println("Escribe el genero/categoria dela serie que desea buscar");
+        var genero = teclado.nextLine();
+        var categoria = Categoria.fromEspanol(genero);
+        List<Serie> seriesPorCategoria = repositorio.findByGenero(categoria);
+        System.out.println("Las Series de la categoria " + genero + " son:");
+        seriesPorCategoria.forEach(System.out::println);
     }
 
 //    public void muestraMenu(){
